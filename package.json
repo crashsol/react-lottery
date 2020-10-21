@@ -30,7 +30,8 @@
     "react-dom": "^16.12.0",
     "three": "^0.121.1",
     "three-css3drenderer": "^1.0.1",
-    "three-trackballcontrols-ts": "^0.2.2",
+    "three-orbitcontrols": "^2.110.3",
+    "three-trackballcontrols": "^0.9.0",
     "tween": "^0.9.0",
     "umi": "^3.2.24",
     "yorkie": "^2.0.0"
