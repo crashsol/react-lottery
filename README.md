@@ -13,3 +13,5 @@ Start the dev server,
 ```bash
 $ yarn start
 ```
+
+```使用私有仓库托管```
