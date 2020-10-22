@@ -5,7 +5,26 @@ import TWEEN from 'tween';
 import TrackballControls from 'three-trackballcontrols';
 import { CSS3DRenderer, CSS3DObject } from 'three-css3drenderer';
 import useSetInterval from './hooks/useSetInterval';
+import styles from './index.less';
 import head from '../images/1.png';
+import head2 from '../images/2.png';
+import head3 from '../images/3.png';
+import head4 from '../images/4.png';
+import { Avatar, Button, Dropdown, Menu, message, notification } from 'antd';
+import {
+  AudioMutedOutlined,
+  AudioOutlined,
+  PlayCircleOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+
+const menu = (
+  <Menu>
+    <Menu.Item>播放</Menu.Item>
+    <Menu.Item>暂停</Menu.Item>
+    <Menu.Item>抽奖</Menu.Item>
+  </Menu>
+);
 
 let scene: THREE.Scene,
   camera: THREE.PerspectiveCamera,
@@ -23,8 +42,8 @@ for (let index = 0; index < 200; index++) {
 const lottery = () => {
   const [allObjects, setAllObjects] = useState<Array<any>>([]);
   const [initType, setInitType] = useState(0);
-  const savedCallback = useRef();
-
+  const [currentPerson, setCurrenPerson] = useState(0);
+  const [play, setPlay] = useState(true);
   const [targets, setTargets] = useState<{
     table: Array<any>;
     sphere: Array<any>;
@@ -102,8 +121,9 @@ const lottery = () => {
 
       var img = document.createElement('img');
       img.src = personArray[i].image;
+      img.height = 100;
+      img.width = 100;
       element.appendChild(img);
-
       var object = new CSS3DObject(element);
       object.position.x = Math.random() * 4000 - 2000;
       object.position.y = Math.random() * 4000 - 2000;
@@ -208,8 +228,7 @@ const lottery = () => {
   const animate = () => {
     // 让场景通过x轴或者y轴旋转  & z
     // scene.rotation.x += 0.011;
-    scene.rotation.y += 0.01; //控制转动
-
+    scene.rotation.y += 0.009; //控制转动
     requestAnimationFrame(animate);
     TWEEN.update();
     controls.update();
@@ -221,9 +240,83 @@ const lottery = () => {
   const render = () => {
     (renderer as any).render(scene, camera);
   };
+
+  const switchMusic = () => {
+    var audio: any = document.getElementById('music');
+    if (audio !== null) {
+      if (audio.paused) {
+        audio.play(); // 播放
+        setPlay(true);
+      } else {
+        audio.pause(); // 暂停
+        setPlay(false);
+      }
+    }
+  };
+
+  const joinMettin = () => {
+    var img = document
+      .getElementsByClassName('element')
+      [currentPerson].getElementsByTagName('img')[0];
+    let temp = Math.floor(Math.random() * 4);
+    console.log(temp);
+    switch (temp) {
+      case 0:
+        img.setAttribute('src', head);
+        break;
+      case 1:
+        img.setAttribute('src', head2);
+        break;
+      case 2:
+        img.setAttribute('src', head3);
+        break;
+      case 3:
+        img.setAttribute('src', head4);
+        break;
+
+      default:
+        break;
+    }
+
+    setCurrenPerson(currentPerson + 1);
+    notification.success({
+      message: <span>XXX 签到成功</span>,
+      description: '',
+      duration: 2,
+      placement: 'bottomRight',
+      icon: <Avatar src={head} />,
+      style: {
+        width: 300,
+      },
+    });
+  };
   return (
     <div>
-      <div id="container"></div>
+      <audio controls={false} id="music" autoPlay={true}>
+        <source src="https://link.hhtjim.com/qq/001zLvbN1NYMuv.mp3" />
+      </audio>
+      <div className={styles.info}>
+        顶顶顶顶顶顶顶第一次会议
+        <Button type="primary" onClick={() => joinMettin()}>
+          人员进入
+        </Button>
+      </div>
+      <div id="container" className={styles.container}></div>
+      <div className={styles.fixedwidgets} onClick={() => switchMusic()}>
+        {play ? (
+          <Avatar
+            size={50}
+            style={{ backgroundColor: '#f56a00' }}
+            icon={<AudioOutlined />}
+          />
+        ) : (
+          <Avatar
+            size={50}
+            style={{ backgroundColor: '#f56a00' }}
+            icon={<AudioMutedOutlined />}
+          />
+        )}
+      </div>
     </div>
   );
 };
